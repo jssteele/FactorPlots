@@ -21,13 +21,12 @@ inpcor = structure(
                      "algebra", "geomet", "trigono")))
 
 # function to normalize vectors to length of 1
-norm2one = function(vecmat){
-  nv = vecmat
+norm2one = function(vec){
+  nv = vec
   #normalize the vector to one
-  nv[2,] = nv[2,]/sqrt(sum(nv[2,]^2))
+  nv = nv/sqrt(sum(nv^2))
   return(nv)
 }
-
 
 # orthogonal basis identification (component extraction), but bear with me
 # using a correlation matrix
@@ -48,15 +47,8 @@ nfact = ncol(fpat)
 # to this point the factor pattern entries are like points in space
 # below these points are turned into vectors anchored at zero
 for(i in 1:nvars){ # for this indicator
-  for(j in 1:nfact){ # project onto this basis
-    if(j==1){ # first one starts a new tuple
-      m=c(0,fpat[i,j]) # vector anchored at the origin
-    }else{ # complete the tuple
-      m=cbind(m,c(0,fpat[i,j])) # all vectors anchored at the origin
-    }
-  } 
-  # normalize vectors to length of one
-  nv = norm2one(m)
+  # normalize vector to length of one
+  nv = rbind(0,norm2one(fpat[i,]))
   # draw the vectors
   segments3d(nv,lwd=1,col='blue') 
   # points at the end of vectors
@@ -76,8 +68,9 @@ parcel2 = c(4:6,4) # c(4,5,6,4)
 # pattern matrix represent parcels and will therefore get a shape.
 # Note if there are more than three indicators for a parcel the above vectors
 # will need to change.
-polygon3d(xyz.coords(fpat[parcel1,]),col='red')
-polygon3d(xyz.coords(fpat[parcel2,]),col='purple')
+nrmpat = t(apply(fpat,1,norm2one))
+polygon3d(xyz.coords(nrmpat[parcel1,]),col='red')
+polygon3d(xyz.coords(nrmpat[parcel2,]),col='purple')
 
 # reset plotting parameters
 par3d(op)
