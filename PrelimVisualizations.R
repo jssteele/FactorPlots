@@ -40,15 +40,15 @@ op = par3d(family='sans')
 spheres3d(0,0,0,radius = 1,col='light blue',alpha=.3)
 axes3d(c("x--","y--","z-+"),cex=0.8)
 
+# normalize each item vector to length of one
+nrmpat = t(apply(fpat,1,norm2one))
 # how many indicators
-nvars = nrow(fpat)
-# how many factors
-nfact = ncol(fpat)
+nvars = nrow(nrmpat)
 # to this point the factor pattern entries are like points in space
 # below these points are turned into vectors anchored at zero
 for(i in 1:nvars){ # for this indicator
   # normalize vector to length of one
-  nv = rbind(0,norm2one(fpat[i,]))
+  nv = rbind(0,nrmpat[i,])
   # draw the vectors
   segments3d(nv,lwd=1,col='blue') 
   # points at the end of vectors
@@ -68,7 +68,6 @@ parcel2 = c(4:6,4) # c(4,5,6,4)
 # pattern matrix represent parcels and will therefore get a shape.
 # Note if there are more than three indicators for a parcel the above vectors
 # will need to change.
-nrmpat = t(apply(fpat,1,norm2one))
 polygon3d(xyz.coords(nrmpat[parcel1,]),col='red')
 polygon3d(xyz.coords(nrmpat[parcel2,]),col='purple')
 
