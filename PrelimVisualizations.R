@@ -20,6 +20,15 @@ inpcor = structure(
                    c("extravsn", "neurotic", "agreeabl",
                      "algebra", "geomet", "trigono")))
 
+# function to normalize vectors to length of 1
+norm2one = function(vecmat){
+  nv = vecmat
+  #normalize the vector to one
+  nv[2,] = nv[2,]/sqrt(sum(nv[2,]^2))
+  return(nv)
+}
+
+
 # orthogonal basis identification (component extraction), but bear with me
 # using a correlation matrix
 esol2 = eigen(inpcor) # eigenvalue decomposition
@@ -27,7 +36,7 @@ esol2 = eigen(inpcor) # eigenvalue decomposition
 fpat = esol2$vectors[,1:3] %*% diag(sqrt(esol2$values[1:3])) # factor pattern
 
 # set up the plotting parameters
-op = par3d(family='bitmap')
+op = par3d(family='sans')
 # unit sphere 30% opacity via alpha
 spheres3d(0,0,0,radius = 1,col='light blue',alpha=.3)
 axes3d(c("x--","y--","z-+"),cex=0.8)
@@ -46,13 +55,16 @@ for(i in 1:nvars){ # for this indicator
       m=cbind(m,c(0,fpat[i,j])) # all vectors anchored at the origin
     }
   } 
+  # normalize vectors to length of one
+  nv = norm2one(m)
   # draw the vectors
-  segments3d(m,lwd=1,col='blue') 
+  segments3d(nv,lwd=1,col='blue') 
   # points at the end of vectors
-  points3d(xyz.coords(t(m[-1,])),pch=19,cex=1.5) 
+  points3d(xyz.coords(t(nv[-1,])),pch=19,cex=1.5) 
   # vector label
-  text3d(xyz.coords(t(m[-1,])), text=rownames(inpcor)[i],adj=c(.5,.7))
+  text3d(xyz.coords(t(nv[-1,])), text=rownames(inpcor)[i],adj=c(.5,.7))
 }
+
 
 # plot the parcels using polygon3d
 # for polygons the coordinates must loop around
