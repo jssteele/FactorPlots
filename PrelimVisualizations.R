@@ -22,10 +22,8 @@ inpcor = structure(
 
 # function to normalize vectors to length of 1
 norm2one = function(vec){
-  nv = vec
   #normalize the vector to one
-  nv = nv/sqrt(sum(nv^2))
-  return(nv)
+  return(vec/sqrt(sum(vec^2)))
 }
 
 # orthogonal basis identification (component extraction), but bear with me
@@ -47,7 +45,7 @@ nvars = nrow(nrmpat)
 # to this point the factor pattern entries are like points in space
 # below these points are turned into vectors anchored at zero
 for(i in 1:nvars){ # for this indicator
-  # normalize vector to length of one
+  # anchor vector at zero
   nv = rbind(0,nrmpat[i,])
   # draw the vectors
   segments3d(nv,lwd=1,col='blue') 
@@ -56,7 +54,6 @@ for(i in 1:nvars){ # for this indicator
   # vector label
   text3d(xyz.coords(t(nv[-1,])), text=rownames(inpcor)[i],adj=c(.5,.7))
 }
-
 
 # plot the parcels using polygon3d
 # for polygons the coordinates must loop around
